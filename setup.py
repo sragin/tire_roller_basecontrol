@@ -29,7 +29,7 @@ setup(
     entry_points={
         'console_scripts': [
             'control_authority = rollertire_control.control_authority:main',
-            # 'can_parser = rollertire_control.can_parser:main',
+            'can_parser = rollertire_control.can_parser:main',
             # 'can_sender = rollertire_control.can_sender:main',
             # 'io_controller = rollertire_control.io_controller:main',
             # 'bucket_controller = rollertire_control.bucket_controller:main',
