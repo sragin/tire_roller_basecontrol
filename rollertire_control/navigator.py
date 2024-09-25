@@ -51,19 +51,34 @@ class TireRollerStateMachine(StateMachine):
         super(TireRollerStateMachine, self).__init__()
 
     def on_enter_idle(self):
-        self.navigator.get_logger().warn('Idle state')
+        self.navigator.get_logger().warn(
+            'Idle state',
+            throttle_duration_sec=1.0
+        )
 
     def on_enter_e_stop(self):
-        self.navigator.get_logger().warn('E-Stop state')
+        self.navigator.get_logger().warn(
+            'E-Stop state',
+            throttle_duration_sec=1.0
+        )
 
     def on_enter_manual(self):
-        self.navigator.get_logger().warn('Manual state')
+        self.navigator.get_logger().warn(
+            'Manual state',
+            throttle_duration_sec=1.0
+        )
 
     def on_enter_remote(self):
-        self.navigator.get_logger().warn('Remote state')
+        self.navigator.get_logger().warn(
+            'Remote state',
+            throttle_duration_sec=1.0
+        )
 
     def on_enter_auto(self):
-        self.navigator.get_logger().warn('Auto state')
+        self.navigator.get_logger().warn(
+            'Auto state',
+            throttle_duration_sec=1.0
+        )
 
 
 class Navigator(Node):
@@ -109,7 +124,10 @@ class Navigator(Node):
             elif self.remote_msg.remote_switch[21] == 1:
                 self.sm.to_remote()
         except TransitionNotAllowed as e:
-            self.get_logger().warn(f'{e}')
+            self.get_logger().warn(
+                f'{e}',
+                throttle_duration_sec=1.0
+            )
 
 
 def main(args=None):
