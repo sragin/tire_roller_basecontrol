@@ -118,7 +118,8 @@ class CanParser(Node):
 
         self.get_logger().debug(
             f'JOY: {self.remote_joystick} SW: {self.remote_switch}',
-            throttle_duration_sec=0.5)
+            throttle_duration_sec=0.5
+        )
 
     def publish_remote_msg(self):
         msg = RemoteControl()
