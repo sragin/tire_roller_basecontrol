@@ -20,7 +20,6 @@ from rollertire_interfaces.msg import RemoteControl
 class TireRollerStateMachine(StateMachine):
     idle = State(initial=True)
     e_stop = State()
-    manual = State()
     remote = State()
     auto = State()
 
@@ -30,20 +29,12 @@ class TireRollerStateMachine(StateMachine):
         | auto.to(e_stop)
         | e_stop.to(e_stop)
     )
-    to_manual = (
-        idle.to(manual)
-        | manual.to(manual)
-        | remote.to(manual)
-        | auto.to(manual)
-        | e_stop.to(manual)
-    )
     to_remote = (
-        manual.to(remote)
+        idle.to(remote)
         | auto.to(remote)
     )
     to_auto = (
-        manual.to(auto)
-        | remote.to(auto)
+        remote.to(auto)
     )
 
     def __init__(self, nav):
@@ -55,9 +46,6 @@ class TireRollerStateMachine(StateMachine):
 
     def on_enter_e_stop(self):
         self.navigator.get_logger().warn('E-Stop state')
-
-    def on_enter_manual(self):
-        self.navigator.get_logger().warn('Manual state')
 
     def on_enter_remote(self):
         self.navigator.get_logger().warn('Remote state')
@@ -104,10 +92,10 @@ class Navigator(Node):
             elif not self.estop_wireless.data and self.remote_msg.remote_switch[12] != 1 \
                     and self.sm.current_state.id == 'e_stop':
                 self.sm.to_idle()
-            elif self.remote_msg.remote_switch[22] == 1:
-                self.sm.to_manual()
             elif self.remote_msg.remote_switch[21] == 1:
                 self.sm.to_remote()
+            elif self.remote_msg.remote_switch[22] == 1:
+                self.sm.to_auto()
         except TransitionNotAllowed as e:
             self.get_logger().warn(f'{e}')
 
