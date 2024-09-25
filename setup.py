@@ -34,7 +34,7 @@ setup(
             # 'io_controller = rollertire_control.io_controller:main',
             # 'bucket_controller = rollertire_control.bucket_controller:main',
             # 'drive_controller = rollertire_control.drive_controller:main',
-            # 'navigator = rollertire_control.navigator:main',
+            'navigator = rollertire_control.navigator:main',
         ],
     },
 )
