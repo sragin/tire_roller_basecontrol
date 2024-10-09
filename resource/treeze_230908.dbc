@@ -1,0 +1,90 @@
+VERSION ""
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: Retrofit_Kit TREEZE
+
+
+BO_ 1040 APS_INFO: 5 TREEZE
+ SG_ Auto_Manual : 32|8@1+ (1,0) [0|1] "On/Off"  Retrofit_Kit
+ SG_ Rdy_iteration : 24|8@1+ (1,0) [0|255] ""  Retrofit_Kit
+ SG_ Error_Status : 8|16@1+ (1,0) [0|1] ""  Retrofit_Kit
+ SG_ Accel_Position : 0|8@1+ (1,0) [0|100] "%"  Retrofit_Kit
+
+BO_ 1024 BRK_MOT_INFO: 6 TREEZE
+ SG_ BRAKE_INFO_STATUS : 40|8@1+ (1,0) [0|2] ""  Retrofit_Kit
+ SG_ BRAKE_INFO_FB : 16|8@1- (1,0) [0|100] "%"  Retrofit_Kit
+ SG_ MOTOR_INFO_Alive_Cnt : 0|8@1+ (1,0) [0|255] ""  Retrofit_Kit
+ SG_ MOTOR_INFO_STATUS : 24|16@1+ (1,0) [0|65535] ""  Retrofit_Kit
+ SG_ MOTOR_INFO_POS : 8|8@1+ (1,0) [0|100] "%"  Retrofit_Kit
+
+BO_ 1296 ACC_CMD: 2 Retrofit_Kit
+ SG_ APS_On : 8|8@1+ (1,0) [0|1] "On/Off"  TREEZE
+ SG_ APS_Signal : 0|8@1+ (1,0) [0|100] ""  TREEZE
+
+BO_ 1280 BRK_CMD: 3 Retrofit_Kit
+ SG_ MOTOR_CMD_POS_EN : 16|8@1+ (1,0) [0|1] ""  TREEZE
+ SG_ MOTOR_CMD_POS : 8|8@1+ (1,0) [0|100] "%"  TREEZE
+ SG_ MOTOR_CMD_EN : 0|8@1+ (1,0) [0|1] ""  TREEZE
+
+
+
+CM_ SG_ 1040 Auto_Manual "0:Manual / 1:Auto";
+CM_ SG_ 1040 Rdy_iteration "0~255반복
+";
+CM_ SG_ 1040 Error_Status "0= Off/ 1=On";
+CM_ SG_ 1040 Accel_Position "Min = 0% / MAX = 100%";
+CM_ SG_ 1024 BRAKE_INFO_STATUS "0: Manual
+1: Auto+Full brake
+2: Auto+Control
+";
+CM_ SG_ 1024 BRAKE_INFO_FB "차량의 brake 전압 출력 값";
+CM_ SG_ 1024 MOTOR_INFO_Alive_Cnt "alive_cnt
+";
+CM_ SG_ 1024 MOTOR_INFO_STATUS "smart motor의 현재 상태";
+CM_ SG_ 1024 MOTOR_INFO_POS "brake 목표 각도 명령 값";
+CM_ SG_ 1296 APS_On "0: Manual
+1: Auto";
+CM_ SG_ 1296 APS_Signal "Accel 밟지 않음 = 0%
+풀 Accel = 100%";
+CM_ SG_ 1280 MOTOR_CMD_POS_EN "0 : full brake (100%)
+
+1 : CMD_POS 신호 사용
+";
+CM_ SG_ 1280 MOTOR_CMD_EN "0 : disable
+1 : enable";
+BA_DEF_  "BusType" STRING ;
+BA_DEF_DEF_  "BusType" "";
+BA_ "BusType" "CAN";
+

@@ -1,0 +1,85 @@
+VERSION ""
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: Retrofit_Kit Remote
+
+
+BO_ 740 Switch: 8 Remote
+ SG_ CNT : 32|8@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ S21 : 26|1@1+ (1,0) [0|0] ""  Retrofit_Kit
+ SG_ S25 : 1|1@1+ (1,0) [0|0] ""  Retrofit_Kit
+ SG_ S10 : 18|1@1+ (1,0) [0|0] ""  Retrofit_Kit
+ SG_ S09 : 17|1@1+ (1,0) [0|0] ""  Retrofit_Kit
+ SG_ S06 : 9|1@1+ (1,0) [0|0] ""  Retrofit_Kit
+ SG_ S04 : 10|1@1+ (1,0) [0|0] ""  Retrofit_Kit
+ SG_ S01 : 15|1@1+ (1,0) [0|0] ""  Retrofit_Kit
+ SG_ S00 : 14|1@1+ (1,0) [0|0] ""  Retrofit_Kit
+ SG_ S03 : 13|1@1+ (1,0) [0|0] ""  Retrofit_Kit
+ SG_ SerialNO : 48|8@1+ (1,0) [0|0] ""  Retrofit_Kit
+ SG_ DeviceID : 56|8@1+ (1,0) [0|0] ""  Retrofit_Kit
+ SG_ S26 : 6|1@1+ (1,0) [0|0] ""  Retrofit_Kit
+ SG_ S19 : 28|1@1+ (1,0) [0|0] ""  Retrofit_Kit
+ SG_ S17 : 30|1@1+ (1,0) [0|0] ""  Retrofit_Kit
+ SG_ S18 : 31|1@1+ (1,0) [0|0] ""  Retrofit_Kit
+ SG_ S20 : 29|1@1+ (1,0) [0|0] ""  Retrofit_Kit
+ SG_ S24 : 25|1@1+ (1,0) [0|0] ""  Retrofit_Kit
+ SG_ S23 : 24|1@1+ (1,0) [0|0] ""  Retrofit_Kit
+ SG_ S22 : 27|1@1+ (1,0) [0|0] ""  Retrofit_Kit
+ SG_ S14 : 3|1@1+ (1,0) [0|0] ""  Retrofit_Kit
+ SG_ S13 : 2|1@1+ (1,0) [0|0] ""  Retrofit_Kit
+ SG_ S12 : 7|1@1+ (1,0) [0|0] ""  Retrofit_Kit
+ SG_ S16 : 0|1@1+ (1,0) [0|0] ""  Retrofit_Kit
+ SG_ S08 : 16|1@1+ (1,0) [0|0] ""  Retrofit_Kit
+ SG_ S07 : 8|1@1+ (1,0) [0|0] ""  Retrofit_Kit
+ SG_ S02 : 12|1@1+ (1,0) [0|0] ""  Retrofit_Kit
+ SG_ S11 : 19|1@1+ (1,0) [0|0] ""  Retrofit_Kit
+ SG_ S05 : 11|1@1+ (1,0) [0|0] ""  Retrofit_Kit
+
+BO_ 484 Lever: 8 Remote
+ SG_ AN8 : 56|8@1+ (1,0) [0|255] ""  Retrofit_Kit
+ SG_ AN7 : 48|8@1+ (1,0) [0|255] ""  Retrofit_Kit
+ SG_ AN6 : 40|8@1+ (1,0) [0|255] ""  Retrofit_Kit
+ SG_ AN5 : 32|8@1+ (1,0) [0|255] ""  Retrofit_Kit
+ SG_ AN4 : 24|8@1+ (1,0) [0|255] ""  Retrofit_Kit
+ SG_ AN3 : 16|8@1+ (1,0) [0|255] ""  Retrofit_Kit
+ SG_ AN2 : 8|8@1+ (1,0) [0|255] ""  Retrofit_Kit
+ SG_ AN1 : 0|8@1+ (1,0) [0|255] ""  Retrofit_Kit
+
+
+
+BA_DEF_  "BusType" STRING ;
+BA_DEF_DEF_  "BusType" "";
+BA_ "BusType" "CAN";
+

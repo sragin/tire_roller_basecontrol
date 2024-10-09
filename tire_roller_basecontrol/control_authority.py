@@ -10,6 +10,8 @@ import threading
 import can
 import rclpy
 from rclpy.node import Node
+from rclpy.qos import qos_profile_system_default
+from roller_base_interfaces.msg import DriveControl
 
 
 class ControlAuthority(Node):
@@ -21,10 +23,17 @@ class ControlAuthority(Node):
 
         self.cnt = 0
 
+        self.drive_msg = DriveControl()
+        self.remote_msg_subscriber = self.create_subscription(
+            DriveControl, 'drive_control', self.recv_drive, qos_profile_system_default)
+
         self.bus = can.interface.Bus(interface='socketcan', channel='can0', bitrate=250000)
         self.thread_canrecv = threading.Thread(target=self.work_canrecv)
         self.thread_canrecv.daemon = True
         self.thread_canrecv.start()
+
+    def recv_drive(self, msg: DriveControl):
+        self.drive_msg = msg
 
     def work_canrecv(self):
         while True:
@@ -62,10 +71,20 @@ class ControlAuthority(Node):
 
     def send_lever_msg(self):
         try:
+            # 레버 전후진
+            if self.drive_msg.fnr == 1: # forward
+                joy_pos = 5
+            elif self.drive_msg.fnr == 2: # reverse
+                joy_pos = 6
+            else:
+                joy_pos = 4
+
+            accel = self.drive_msg.accel
+
             msg_101 = can.Message(
                 arbitration_id=0x101,
                 is_extended_id=False,
-                data=[0x00, 0x08, 0x00, 0xFF, 0x00, 0x00, 0x00, self.cnt])
+                data=[0x00, joy_pos, accel, 0xFF, 0x00, 0x00, 0x00, self.cnt])
             self.cnt = self.cnt + 1
             self.cnt = self.cnt % 256
             msg_102 = can.Message(

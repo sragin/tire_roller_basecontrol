@@ -4,7 +4,7 @@
 # Unauthorized copying of this code base via any medium is strictly prohibited.
 # Proprietary and confidential.
 #
-# 타이어롤러용 CAN 메시지 수신 및 송신 노드
+# 타이어롤러용 CAN 메시지 수신 노드
 
 
 from array import array
@@ -14,16 +14,16 @@ from can_msgs.msg import Frame
 import cantools
 import rclpy
 from rclpy.duration import Duration
+from rclpy.logging import LoggingSeverity
 from rclpy.node import Node
 from rclpy.qos import QoSProfile
 from rclpy.qos import qos_profile_sensor_data
 from rclpy.qos_event import QoSOfferedDeadlineMissedInfo
 from rclpy.qos_event import SubscriptionEventCallbacks
+from roller_base_interfaces.msg import RemoteControl
 from std_msgs.msg import Float32
 from std_msgs.msg import Int8
-# from wheelloader_interfaces.msg import DanfossFB
-from rollertire_interfaces.msg import RemoteControl
-from rclpy.logging import LoggingSeverity
+
 
 class CanParser(Node):
 
@@ -34,16 +34,16 @@ class CanParser(Node):
         self.get_logger().set_level(LoggingSeverity.DEBUG)
 
         self.candb_remote = cantools.db.load_file(
-            get_package_share_directory('rollertire_control') + '/remote_240122.dbc')
+            get_package_share_directory('tire_roller_basecontrol') + '/remote_240122.dbc')
         self.can_msg_remote_lever = self.candb_remote.get_message_by_name('Lever')
         self.can_msg_remote_switch = self.candb_remote.get_message_by_name('Switch')
-        self.candb_danfoss = cantools.db.load_file(
-            get_package_share_directory('rollertire_control') + '/danfoss_240130.dbc')
-        self.can_msg_danfoss_pilot = self.candb_danfoss.get_message_by_name('D_Pilot_FB')
-        self.can_msg_danfoss_boom_fb = self.candb_danfoss.get_message_by_name('D_Boom_FB')
-        self.can_msg_danfoss_bucket_fb = self.candb_danfoss.get_message_by_name('D_Bkt_FB')
+        # self.candb_danfoss = cantools.db.load_file(
+        #     get_package_share_directory('tire_roller_basecontrol') + '/danfoss_240130.dbc')
+        # self.can_msg_danfoss_pilot = self.candb_danfoss.get_message_by_name('D_Pilot_FB')
+        # self.can_msg_danfoss_boom_fb = self.candb_danfoss.get_message_by_name('D_Boom_FB')
+        # self.can_msg_danfoss_bucket_fb = self.candb_danfoss.get_message_by_name('D_Bkt_FB')
         self.candb_encoder = cantools.db.load_file(
-            get_package_share_directory('rollertire_control') + '/steerEnc_220531.dbc')
+            get_package_share_directory('tire_roller_basecontrol') + '/steerEnc_220531.dbc')
         self.can_msg_encoder = self.candb_encoder.get_message_by_name('SteerEncoder')
 
         deadline_qos = QoSProfile(
