@@ -4,7 +4,7 @@ import os
 from setuptools import find_packages
 from setuptools import setup
 
-package_name = 'rollertire_control'
+package_name = 'tire_roller_basecontrol'
 
 setup(
     name=package_name,
@@ -23,18 +23,18 @@ setup(
     zip_safe=True,
     maintainer='koceti',
     maintainer_email='jpkim@koceti.re.kr',
-    description='Tire Roller Controller',
+    description='Tire Roller Base Controller',
     # license='koceti',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'control_authority = rollertire_control.control_authority:main',
-            'can_parser = rollertire_control.can_parser:main',
-            # 'can_sender = rollertire_control.can_sender:main',
-            # 'io_controller = rollertire_control.io_controller:main',
-            # 'bucket_controller = rollertire_control.bucket_controller:main',
-            # 'drive_controller = rollertire_control.drive_controller:main',
-            'navigator = rollertire_control.navigator:main',
+            'control_authority = tire_roller_basecontrol.control_authority:main',
+            'can_parser = tire_roller_basecontrol.can_parser:main',
+            'can_sender = tire_roller_basecontrol.can_sender:main',
+            'io_controller = tire_roller_basecontrol.io_controller:main',
+            # 'bucket_controller = tire_roller_basecontrol.bucket_controller:main',
+            'drive_controller = tire_roller_basecontrol.drive_controller:main',
+            'navigator_base = tire_roller_basecontrol.navigator:main',
         ],
     },
 )

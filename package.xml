@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>rollertire_control</name>
+  <name>tire_roller_basecontrol</name>
   <version>0.0.1</version>
-  <description>Tire Roller Controller</description>
+  <description>Tire Roller Base Controller</description>
   <maintainer email="jpkim@koceti.re.kr">koceti</maintainer>
   <license>koceti</license>
 
@@ -13,7 +13,7 @@
   <test_depend>python3-pytest</test_depend>
   <depend>can_msgs</depend>
   <depend>ros2_socketcan</depend>
-  <depend>rollertire_interfaces</depend>
+  <depend>roller_interfaces</depend>
 
   <export>
     <build_type>ament_python</build_type>
