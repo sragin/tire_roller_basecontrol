@@ -13,16 +13,16 @@ from ament_index_python import get_package_share_directory
 from can_msgs.msg import Frame
 import cantools
 import rclpy
-from rclpy.duration import Duration
+# from rclpy.duration import Duration
 from rclpy.logging import LoggingSeverity
 from rclpy.node import Node
-from rclpy.qos import QoSProfile
 from rclpy.qos import qos_profile_sensor_data
-from rclpy.qos_event import QoSOfferedDeadlineMissedInfo
-from rclpy.qos_event import SubscriptionEventCallbacks
+# from rclpy.qos import QoSProfile
+# from rclpy.qos_event import QoSOfferedDeadlineMissedInfo
+# from rclpy.qos_event import SubscriptionEventCallbacks
 from roller_base_interfaces.msg import RemoteControl
-from std_msgs.msg import Float32
-from std_msgs.msg import Int8
+# from std_msgs.msg import Float32
+# from std_msgs.msg import Int8
 
 
 class CanParser(Node):
@@ -46,10 +46,10 @@ class CanParser(Node):
             get_package_share_directory('tire_roller_basecontrol') + '/steerEnc_220531.dbc')
         self.can_msg_encoder = self.candb_encoder.get_message_by_name('SteerEncoder')
 
-        deadline_qos = QoSProfile(
-            depth=10,
-            deadline=Duration(seconds=3, nanoseconds=0),
-        )
+        # deadline_qos = QoSProfile(
+        #     depth=10,
+        #     deadline=Duration(seconds=3, nanoseconds=0),
+        # )
         # deadline_event_callback = SubscriptionEventCallbacks(
         #     deadline=self.anm_deadline_event_callback,
         # )

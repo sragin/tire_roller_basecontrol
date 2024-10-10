@@ -12,13 +12,14 @@ from can_msgs.msg import Frame
 import cantools
 import rclpy
 from rclpy.node import Node
-from rclpy.qos import qos_profile_sensor_data, qos_profile_system_default
-from std_msgs.msg import Float32
-from std_msgs.msg import Int8
-from std_msgs.msg import String
-from roller_base_interfaces.msg import BucketControl
-from roller_base_interfaces.msg import DanfossFB
+# from rclpy.qos import qos_profile_sensor_data
+from rclpy.qos import qos_profile_system_default
 from roller_base_interfaces.msg import DriveControl
+# from std_msgs.msg import Float32
+# from std_msgs.msg import Int8
+# from std_msgs.msg import String
+# from roller_base_interfaces.msg import BucketControl
+# from roller_base_interfaces.msg import DanfossFB
 
 
 class CanSender(Node):
@@ -38,7 +39,6 @@ class CanSender(Node):
         # self.can_msg_treeze_acc_cmd = self.candb_treeze.get_message_by_name('ACC_CMD')
         # self.candb_anm = cantools.db.load_file(
         #     get_package_share_directory('tire_roller_basecontrol') + '/anm_240219.dbc')
-        # self.can_msg_response_cylinderp = self.candb_anm.get_message_by_name('Response_Cylinder_P')
 
         # self.bucket_msg_subscriber = self.create_subscription(
         #     BucketControl, 'bucket_control', self.recv_bucket, qos_profile_system_default)
@@ -110,9 +110,7 @@ class CanSender(Node):
 
     def recv_drive(self, msg: DriveControl):
         self.drive_control_msg = msg
-        self.get_logger().info(
-            f'DRIVE CONTROL MSG: {msg}'
-            , throttle_duration_sec=0.99)
+        self.get_logger().info(f'DRIVE CONTROL MSG: {msg}', throttle_duration_sec=0.99)
 
     # def recv_danfoss(self, msg: DanfossFB):
     #     self.danfoss_fb_msg = msg
@@ -273,8 +271,8 @@ class CanSender(Node):
         msg_danfoss_steer_cmd.data[:msg_danfoss_steer_cmd.dlc] = list(data)
         self.can1_msg_publisher.publish(msg_danfoss_steer_cmd)
         self.get_logger().info(
-            f'DANFOSS STEER CMD: {msg_danfoss_steer_cmd}'
-            , throttle_duration_sec=0.99)
+            f'DANFOSS STEER CMD: {msg_danfoss_steer_cmd}',
+            throttle_duration_sec=0.99)
 
     # ENCODER를 ENABLE 해준다
     def publish_can_bus3_msg(self):

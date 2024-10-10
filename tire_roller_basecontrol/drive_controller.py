@@ -11,10 +11,10 @@
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data, qos_profile_system_default
-from std_msgs.msg import String
 from roller_base_interfaces.msg import AnmControl
 from roller_base_interfaces.msg import DriveControl
 from roller_base_interfaces.msg import RemoteControl
+from std_msgs.msg import String
 
 
 class DriveController(Node):
@@ -103,9 +103,8 @@ class DriveController(Node):
 
         self.get_logger().info(
             f'Drive: {accel} Brake: {brake} FNR: {fnr} '
-            f'Steer Left: {steer_left} Right: {steer_right}'
-            , throttle_duration_sec=0.99
-        )
+            f'Steer Left: {steer_left} Right: {steer_right}',
+            throttle_duration_sec=0.99)
 
 
 def main(args=None):

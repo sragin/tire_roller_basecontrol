@@ -72,9 +72,9 @@ class ControlAuthority(Node):
     def send_lever_msg(self):
         try:
             # 레버 전후진
-            if self.drive_msg.fnr == 1: # forward
+            if self.drive_msg.fnr == 1:  # forward
                 joy_pos = 5
-            elif self.drive_msg.fnr == 2: # reverse
+            elif self.drive_msg.fnr == 2:  # reverse
                 joy_pos = 6
             else:
                 joy_pos = 4

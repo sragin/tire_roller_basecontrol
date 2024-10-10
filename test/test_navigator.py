@@ -1,11 +1,11 @@
 import pytest
 
 import rclpy
+from roller_base_interfaces.msg import AnmControl
+from roller_base_interfaces.msg import RemoteControl
 from statemachine.exceptions import TransitionNotAllowed
 from std_msgs.msg import Bool
-from rollertire_control.navigator import Navigator
-from wheelloader_interfaces.msg import AnmControl
-from wheelloader_interfaces.msg import RemoteControl
+from tire_roller_basecontrol.navigator import Navigator
 
 
 @pytest.fixture
@@ -17,7 +17,7 @@ def navigator():
     rclpy.shutdown()
 
 
-def test_idle_state_transitions(navigator):
+def test_idle_state_transitions(navigator: Navigator):
     sm = navigator.sm
 
     sm.current_state = sm.idle
@@ -37,7 +37,7 @@ def test_idle_state_transitions(navigator):
         sm.to_estop()
 
 
-def test_estop_state_transitions(navigator):
+def test_estop_state_transitions(navigator: Navigator):
     sm = navigator.sm
 
     sm.current_state = sm.e_stop
@@ -57,7 +57,7 @@ def test_estop_state_transitions(navigator):
         sm.to_auto()
 
 
-def test_manual_state_transitions(navigator):
+def test_manual_state_transitions(navigator: Navigator):
     sm = navigator.sm
 
     sm.current_state = sm.manual
@@ -77,7 +77,7 @@ def test_manual_state_transitions(navigator):
     assert sm.current_state == sm.auto
 
 
-def test_remote_state_transitions(navigator):
+def test_remote_state_transitions(navigator: Navigator):
     sm = navigator.sm
 
     sm.current_state = sm.remote
@@ -97,7 +97,7 @@ def test_remote_state_transitions(navigator):
     assert sm.current_state == sm.auto
 
 
-def test_auto_state_transitions(navigator):
+def test_auto_state_transitions(navigator: Navigator):
     sm = navigator.sm
 
     sm.current_state = sm.auto
@@ -117,7 +117,7 @@ def test_auto_state_transitions(navigator):
         sm.to_auto()
 
 
-def test_invalid_transitions(navigator):
+def test_invalid_transitions(navigator: Navigator):
     sm = navigator.sm
 
     sm.current_state = sm.idle
@@ -143,7 +143,7 @@ def test_invalid_transitions(navigator):
         sm.to_auto()
 
 
-def test_state_machine_idle(navigator):
+def test_state_machine_idle(navigator: Navigator):
     sm = navigator.sm
     assert sm.current_state == sm.idle
 
@@ -154,7 +154,7 @@ def remote_switch():
     return remote_switch
 
 
-def test_state_machine_estop(navigator, remote_switch):
+def test_state_machine_estop(navigator: Navigator, remote_switch):
     sm = navigator.sm
 
     sm.current_state = sm.remote
@@ -178,7 +178,7 @@ def test_state_machine_estop(navigator, remote_switch):
     assert sm.current_state == sm.e_stop
 
 
-def test_state_machine_manual_switch(navigator, remote_switch):
+def test_state_machine_manual_switch(navigator: Navigator, remote_switch):
     sm = navigator.sm
     remote_switch[22] = 1
     navigator.recv_remote(RemoteControl(remote_switch=remote_switch))
@@ -186,7 +186,7 @@ def test_state_machine_manual_switch(navigator, remote_switch):
     assert sm.current_state == sm.manual
 
 
-def test_state_machine_remote_switch(navigator, remote_switch):
+def test_state_machine_remote_switch(navigator: Navigator, remote_switch):
     sm = navigator.sm
 
     remote_switch[22] = 1
