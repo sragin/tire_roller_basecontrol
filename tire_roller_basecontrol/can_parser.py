@@ -161,7 +161,7 @@ class CanParser(Node):
                 f'COUNT: {self.encoder_cnt} '
                 f'DEGREE: {self.encoder_degree:.1f} '
                 f'ERROR: {self.encoder_error}',
-                throttle_duration=0.99)
+                throttle_duration_sec=0.99)
 
     # def publish_danfoss_msg(self):
     #     msg = DanfossFB()

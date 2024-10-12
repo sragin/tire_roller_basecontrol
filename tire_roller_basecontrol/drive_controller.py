@@ -44,7 +44,7 @@ class DriveController(Node):
 
     def recv_status(self, msg: String):
         self.status = msg.data
-        # self.get_logger().info(f'Status: {self.status}')
+        self.get_logger().info(f'Status: {self.status}', throttle_duration_sec=1.0)
 
     def recv_anm(self, msg: AnmControl):
         self.anm_msg = msg
@@ -53,7 +53,6 @@ class DriveController(Node):
         self.remote_msg = msg
 
     def publish_drive(self):
-        self.status = 'remote'
         if self.status == 'auto':
             accel = self.anm_msg.accel
             brake = self.anm_msg.brake
