@@ -33,10 +33,6 @@ class CanSender(Node):
         self.can_msg_danfoss_steer_cmd = self.candb_danfoss.get_message_by_name('Steering_Cmd')
         # self.can_msg_danfoss_boom_cmd = self.candb_danfoss.get_message_by_name('D_Boom_Cmd')
         # self.can_msg_danfoss_bucket_cmd = self.candb_danfoss.get_message_by_name('D_Bkt_Cmd')
-        # self.candb_treeze = cantools.db.load_file(
-        #     get_package_share_directory('tire_roller_basecontrol') + '/treeze_230908.dbc')
-        # self.can_msg_treeze_brk_cmd = self.candb_treeze.get_message_by_name('BRK_CMD')
-        # self.can_msg_treeze_acc_cmd = self.candb_treeze.get_message_by_name('ACC_CMD')
         # self.candb_anm = cantools.db.load_file(
         #     get_package_share_directory('tire_roller_basecontrol') + '/anm_240219.dbc')
 
@@ -48,8 +44,6 @@ class CanSender(Node):
         #     DanfossFB, 'danfoss_msg', self.recv_danfoss, qos_profile_sensor_data)
         # self.status_msg_subscriber = self.create_subscription(
         #     String, 'status', self.recv_status, qos_profile_system_default)
-        # self.encoder_msg_subscriber = self.create_subscription(
-        #     Float32, 'encoder_msg', self.recv_encoder, qos_profile_sensor_data)
         # self.brake_msg_subscriber = self.create_subscription(
         #     Int8, 'brake_pos', self.recv_brake, qos_profile_sensor_data)
         # self.accel_msg_subscriber = self.create_subscription(
@@ -114,9 +108,6 @@ class CanSender(Node):
 
     # def recv_danfoss(self, msg: DanfossFB):
     #     self.danfoss_fb_msg = msg
-
-    # def recv_encoder(self, msg: Float32):
-    #     self.encoder_degree = msg.data
 
     # def recv_accel(self, msg: Int8):
     #     self.accel_pos = msg.data
@@ -260,6 +251,7 @@ class CanSender(Node):
     #         self.can3_cnt = 0
     #     else:
     #         self.can3_cnt = self.can3_cnt + 1
+    # steering cmd 전송
     def publish_can_bus1_msg(self):
         data = self.can_msg_danfoss_steer_cmd.encode({
             'Left_duty': self.drive_control_msg.steer_left,
