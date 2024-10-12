@@ -116,7 +116,8 @@ def main(args=None):
         drive_controller.get_logger().warn('Keyboard interrrupt (SIGINT)')
     finally:
         drive_controller.destroy_node()
-        rclpy.shutdown()
+        if rclpy.ok():
+            rclpy.shutdown()
 
 
 if __name__ == '__main__':
