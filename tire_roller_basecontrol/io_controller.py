@@ -53,7 +53,6 @@ class IOController(Node):
             self.get_logger().warn('DO module is not opened')
             self.modbusclient_DO.close()
             self.modbusclient_DO.open()
-            return
         # 연결된 후 IO초기화 진행
         # Seat, CAN mux, BTS, Parking, Brake Analog
         self.modbusclient_DO.write_multiple_coils(0, [True, True, True, False, False])
