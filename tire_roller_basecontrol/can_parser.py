@@ -21,7 +21,7 @@ from rclpy.qos import qos_profile_sensor_data
 # from rclpy.qos_event import QoSOfferedDeadlineMissedInfo
 # from rclpy.qos_event import SubscriptionEventCallbacks
 from roller_base_interfaces.msg import RemoteControl
-# from std_msgs.msg import Float32
+from std_msgs.msg import Float32
 # from std_msgs.msg import Int8
 
 
@@ -59,12 +59,12 @@ class CanParser(Node):
             self.recv_remote,
             qos_profile=10
         )
-        # self.can3_msg_subscriber = self.create_subscription(
-        #     Frame,
-        #     'can3/from_can_bus',
-        #     self.recv_can_bus3,
-        #     qos_profile=10
-        # )
+        self.can3_msg_subscriber = self.create_subscription(
+            Frame,
+            'can3/from_can_bus',
+            self.recv_can_bus3,
+            qos_profile=10
+        )
 
         self.remote_mgs_publish_frequency = 20  # 입력주파수가 20Hz 이어서 출력 주파수도 20Hz로 설정함
         # self.danfoss_mgs_publish_frequency = 10
@@ -72,8 +72,8 @@ class CanParser(Node):
             RemoteControl, 'remote_msg', qos_profile_sensor_data)
         # self.danfoss_publisher = self.create_publisher(
         #     DanfossFB, 'danfoss_msg', qos_profile_sensor_data)
-        # self.encoder_publisher = self.create_publisher(
-        #     Float32, 'encoder_msg', qos_profile_sensor_data)
+        self.encoder_publisher = self.create_publisher(
+            Float32, 'encoder_msg', qos_profile_sensor_data)
         self.timer_publish_remote_msg = self.create_timer(
             1/self.remote_mgs_publish_frequency, self.publish_remote_msg)
         # self.timer_publish_danfoss_msg = self.create_timer(
@@ -127,8 +127,8 @@ class CanParser(Node):
         msg.remote_switch = self.remote_switch
         self.remote_publisher.publish(msg)
 
-    # def recv_can_bus3(self, msg):
-    #     # self.get_logger().info(f'{msg}')
+    def recv_can_bus3(self, msg: Frame):
+        # self.get_logger().info(f'{msg}')
     #     if msg.id == self.can_msg_danfoss_pilot.frame_id:
     #         _cur = self.can_msg_danfoss_pilot.decode(msg.data)
     #         self.boom_dn_cp = _cur['Boom_dn_C_P']
@@ -151,25 +151,17 @@ class CanParser(Node):
     #         #     f'FB BOOM DOWN: {self.boom_dn_fb} UP: {self.boom_up_fb}'
     #         #     f' BUCKET IN: {self.bucket_in_fb} OUT: {self.bucket_out_fb}'
     #         # )
-    #     elif msg.id == self.can_msg_encoder.frame_id:
-    #         _cur = self.can_msg_encoder.decode(msg.data)
-    #         self.encoder_cnt = _cur['SingleTurn']
-    #         self.encoder_error = _cur['Error']
-    #         # 16384 pulse / 360 degree / 140:25 gear ratio
-    #         self.encoder_degree = self.encoder_cnt / 16384 * 360 / 140 * 25
-    #         # self.get_logger().info(
-    #         #     f'COUNT: {self.encoder_cnt} DEGREE: {self.encoder_degree:.1f}\
-    #         #     f'ERROR: {self.encoder_error}')
-    #     elif msg.id == self.can_msg_treeze_brk_info.frame_id:
-    #         # self.get_logger().info(f'{msg}')
-    #         _cur = self.can_msg_treeze_brk_info.decode(msg.data)
-    #         self.brake_pos = _cur['BRAKE_INFO_FB']
-    #         # self.get_logger().info(f'BRAKE: {_cur["BRAKE_INFO_FB"]} {_cur["MOTOR_INFO_POS"]}')
-    #     elif msg.id == self.can_msg_treeze_aps_info.frame_id:
-    #         # self.get_logger().info(f'{msg}')
-    #         _cur = self.can_msg_treeze_aps_info.decode(msg.data)
-    #         self.accel_pos = _cur['Accel_Position']
-    #         # self.get_logger().info(f'ACCEL: {_cur["Accel_Position"]}')
+        if msg.id == self.can_msg_encoder.frame_id:
+            _cur = self.can_msg_encoder.decode(msg.data)
+            self.encoder_cnt = _cur['SingleTurn']
+            self.encoder_error = _cur['Error']
+            # 16384 pulse / 360 degree / 140:25 gear ratio
+            self.encoder_degree = self.encoder_cnt / 16384 * 360 / 140 * 25
+            self.get_logger().info(
+                f'COUNT: {self.encoder_cnt} '
+                f'DEGREE: {self.encoder_degree:.1f} '
+                f'ERROR: {self.encoder_error}',
+                throttle_duration=0.99)
 
     # def publish_danfoss_msg(self):
     #     msg = DanfossFB()
