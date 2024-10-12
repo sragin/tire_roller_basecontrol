@@ -124,7 +124,8 @@ def main(args=None):
     except KeyboardInterrupt:
         io_controller.get_logger().warn('Keyboard interrrupt (SIGINT)')
     io_controller.destroy_node()
-    rclpy.shutdown()
+    if rclpy.ok():
+        rclpy.shutdown()
 
 
 if __name__ == '__main__':
