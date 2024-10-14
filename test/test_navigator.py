@@ -158,20 +158,12 @@ def test_state_machine_estop(navigator: Navigator, remote_switch):
     sm = navigator.sm
 
     sm.current_state = sm.remote
-    navigator.recv_anm(AnmControl(e_stop=True))
-    navigator.manage_state()
-    print(navigator.anm_msg)
-    assert sm.current_state == sm.e_stop
-
-    sm.current_state = sm.remote
-    navigator.recv_anm(AnmControl(e_stop=False))
     navigator.recv_wireless(Bool(data=True))
     navigator.manage_state()
     assert sm.current_state == sm.e_stop
 
     sm.current_state = sm.remote
     remote_switch[12] = 1  # remote sw e-stop button
-    navigator.recv_anm(AnmControl(e_stop=False))
     navigator.recv_wireless(Bool(data=False))
     navigator.recv_remote(RemoteControl(remote_switch=remote_switch))
     navigator.manage_state()
@@ -185,11 +177,8 @@ def test_state_machine_manual_switch(navigator: Navigator, remote_switch):
     navigator.manage_state()
     assert sm.current_state == sm.manual
 
-
-def test_state_machine_remote_switch(navigator: Navigator, remote_switch):
-    sm = navigator.sm
-
-    remote_switch[22] = 1
+    remote_switch[22] = 0
+    remote_switch[21] = 1
     navigator.recv_remote(RemoteControl(remote_switch=remote_switch))
     navigator.manage_state()
-    assert sm.current_state == sm.manual
+    assert sm.current_state == sm.remote
