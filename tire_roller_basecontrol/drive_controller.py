@@ -26,6 +26,7 @@ class DriveController(Node):
 
         self.anm_msg = AnmControl()
         self.remote_msg = RemoteControl()
+        self.drive_msg = DriveControl()
         self.status = 'idle'
         self.drive_log_cnt = 0
 
@@ -67,7 +68,7 @@ class DriveController(Node):
                 brake = 0
                 fnr = 1  # forward
             elif msg.remote_joystick[0] > 127 and msg.remote_switch[0]:
-                accel = (msg.remote_joystick[0] - 127) / 126 * 100
+                accel = (msg.remote_joystick[0] - 127) / 127 * 100
                 brake = 0
                 fnr = 2  # reverse
             else:
@@ -81,7 +82,7 @@ class DriveController(Node):
                 steer_left = 0
             elif msg.remote_joystick[3] > 127 and msg.remote_switch[8]:
                 steer_right = 0
-                steer_left = (msg.remote_joystick[3] - 127) / 126 * 100
+                steer_left = (msg.remote_joystick[3] - 127) / 127 * 100
             else:
                 steer_left = 0
                 steer_right = 0
@@ -92,13 +93,13 @@ class DriveController(Node):
             steer_left = 0
             steer_right = 0
 
-        msg_drive = DriveControl()
-        msg_drive.accel = int(accel)
-        msg_drive.brake = int(brake)
-        msg_drive.fnr = fnr
-        msg_drive.steer_left = int(steer_left)
-        msg_drive.steer_right = int(steer_right)
-        self.drive_control_msg_publisher.publish(msg_drive)
+        self.drive_msg = DriveControl()
+        self.drive_msg.accel = int(accel)
+        self.drive_msg.brake = int(brake)
+        self.drive_msg.fnr = fnr
+        self.drive_msg.steer_left = int(steer_left)
+        self.drive_msg.steer_right = int(steer_right)
+        self.drive_control_msg_publisher.publish(self.drive_msg)
 
         self.get_logger().info(
             f'Drive: {accel} Brake: {brake} FNR: {fnr} '
