@@ -1,7 +1,6 @@
 import pytest
 
 import rclpy
-from roller_base_interfaces.msg import AnmControl
 from roller_base_interfaces.msg import RemoteControl
 from statemachine.exceptions import TransitionNotAllowed
 from std_msgs.msg import Bool

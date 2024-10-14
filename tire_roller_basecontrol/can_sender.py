@@ -312,7 +312,7 @@ class CanSender(Node):
             id=0x70B,
             is_extended=False,
             dlc=1,
-            data=[0x05, 0, 0, 0, 0, 0, 0 ,0])
+            data=[0x05, 0, 0, 0, 0, 0, 0, 0])
 
         self.can0_msg_publisher.publish(msg_70)
         self.can0_msg_publisher.publish(msg_101)

@@ -129,28 +129,6 @@ class CanParser(Node):
 
     def recv_can_bus3(self, msg: Frame):
         # self.get_logger().info(f'{msg}')
-    #     if msg.id == self.can_msg_danfoss_pilot.frame_id:
-    #         _cur = self.can_msg_danfoss_pilot.decode(msg.data)
-    #         self.boom_dn_cp = _cur['Boom_dn_C_P']
-    #         self.boom_up_cp = _cur['Boom_up_C_P']
-    #         self.bucket_in_cp = _cur['Bucket_in_C_P']
-    #         self.bucket_out_cp = _cur['Bucket_out_C_P']
-    #         # self.get_logger().info(
-    #         #     f'BOOM DOWN: {self.boom_dn_cp:.1f} UP: {self.boom_up_cp:.1f}'
-    #         #     f' BUCKET IN: {self.bucket_in_cp:.1f} OUT: {self.bucket_out_cp:.1f}'
-    #         # )
-    #     elif msg.id == self.can_msg_danfoss_boom_fb.frame_id:
-    #         _cur = self.can_msg_danfoss_boom_fb.decode(msg.data)
-    #         self.boom_dn_fb = _cur['Boom_dn_FB']
-    #         self.boom_up_fb = _cur['Boom_up_FB']
-    #     elif msg.id == self.can_msg_danfoss_bucket_fb.frame_id:
-    #         _cur = self.can_msg_danfoss_bucket_fb.decode(msg.data)
-    #         self.bucket_in_fb = _cur['Bkt_in_FB']
-    #         self.bucket_out_fb = _cur['Bkt_out_FB']
-    #         # self.get_logger().info(
-    #         #     f'FB BOOM DOWN: {self.boom_dn_fb} UP: {self.boom_up_fb}'
-    #         #     f' BUCKET IN: {self.bucket_in_fb} OUT: {self.bucket_out_fb}'
-    #         # )
         if msg.id == self.can_msg_encoder.frame_id:
             _cur = self.can_msg_encoder.decode(msg.data)
             self.encoder_cnt = _cur['SingleTurn']
