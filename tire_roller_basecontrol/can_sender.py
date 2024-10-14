@@ -322,7 +322,7 @@ class CanSender(Node):
         self.can0_msg_publisher.publish(msg_105)
         self.can0_msg_publisher.publish(msg_106)
         self.get_logger().info(
-            f'{msg_101}',
+            f'LEVER CMD:\t\tid:{msg_101.id}, data:{msg_101.data}',
             throttle_duration_sec=0.99)
 
     # steering cmd 전송
@@ -337,7 +337,8 @@ class CanSender(Node):
         msg_danfoss_steer_cmd.data[:msg_danfoss_steer_cmd.dlc] = list(data)
         self.can1_msg_publisher.publish(msg_danfoss_steer_cmd)
         self.get_logger().info(
-            f'DANFOSS STEER CMD: {msg_danfoss_steer_cmd}',
+            f'DANFOSS STEER CMD:\tid:{msg_danfoss_steer_cmd.id}, '
+            f'data:{msg_danfoss_steer_cmd.data}',
             throttle_duration_sec=0.99)
 
     # ENCODER를 ENABLE 해준다
