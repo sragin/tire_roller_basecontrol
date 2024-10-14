@@ -48,18 +48,23 @@ class CanSender(Node):
         #     Int8, 'brake_pos', self.recv_brake, qos_profile_sensor_data)
         # self.accel_msg_subscriber = self.create_subscription(
         #     Int8, 'accel_pos', self.recv_accel, qos_profile_sensor_data)
-
-        self.can3_publish_frequency = 1
-        self.can3_msg_publisher = self.create_publisher(
-            Frame, 'can3/to_can_bus', qos_profile_system_default)
-        self.timer_publish_can_bus3_msg = self.create_timer(
-            1/self.can3_publish_frequency, self.publish_can_bus3_msg)
+        self.can0_publish_frequency = 50
+        self.can0_msg_publisher = self.create_publisher(
+            Frame, 'can0/to_can_bus', qos_profile_system_default)
+        self.timer_publish_can_bus0_msg = self.create_timer(
+            1/self.can0_publish_frequency, self.publish_can_bus0_msg)
 
         self.can1_publish_frequency = 50
         self.can1_msg_publisher = self.create_publisher(
             Frame, 'can1/to_can_bus', qos_profile_system_default)
         self.timer_publish_can_bus1_msg = self.create_timer(
             1/self.can1_publish_frequency, self.publish_can_bus1_msg)
+
+        self.can3_publish_frequency = 1
+        self.can3_msg_publisher = self.create_publisher(
+            Frame, 'can3/to_can_bus', qos_profile_system_default)
+        self.timer_publish_can_bus3_msg = self.create_timer(
+            1/self.can3_publish_frequency, self.publish_can_bus3_msg)
 
         # self.status = 'e_stop'
         # self.bucket_control_msg = BucketControl()
@@ -74,6 +79,7 @@ class CanSender(Node):
         # self.can3_cnt = 0
         # self.can2_cnt = 0
         # self.initTreeze()
+        self.can0_cnt = 0
 
     # def initTreeze(self):
     #     data = self.can_msg_treeze_brk_cmd.encode({
@@ -251,6 +257,74 @@ class CanSender(Node):
     #         self.can3_cnt = 0
     #     else:
     #         self.can3_cnt = self.can3_cnt + 1
+    # lever 메시지 전송
+    def publish_can_bus0_msg(self):
+        # 레버 전후진
+        if self.drive_control_msg.fnr == 1:  # forward
+            joy_pos = 5
+        elif self.drive_control_msg.fnr == 2:  # reverse
+            joy_pos = 6
+        else:
+            joy_pos = 4
+        accel = self.drive_control_msg.accel
+
+        msg_101 = Frame(
+            id=0x101,
+            is_extended=False,
+            dlc=8,
+            data=[0x00, joy_pos, accel, 0xFF, 0x00, 0x00, 0x00, self.can0_cnt])
+        self.can0_cnt = self.can0_cnt + 1
+        self.can0_cnt = self.can0_cnt % 256
+        msg_102 = Frame(
+            id=0x102,
+            is_extended=False,
+            dlc=8,
+            data=[0, 0, 0, 0, 0, 0, 0, 0])
+        msg_102.data[0] = 255 - msg_101.data[0]
+        msg_102.data[1] = 255 - msg_101.data[1]
+        msg_102.data[2] = 255 - msg_101.data[2]
+        msg_102.data[3] = 255 - msg_101.data[3]
+        msg_102.data[4] = 255 - msg_101.data[4]
+        msg_102.data[5] = 255 - msg_101.data[5]
+        msg_102.data[6] = 255 - msg_101.data[6]
+        msg_102.data[7] = 255 - msg_101.data[7]
+        msg_103 = Frame(
+            id=0x103,
+            is_extended=False,
+            dlc=8,
+            data=[0, 0, 0, 0, 0, 0, 0, msg_101.data[-1]])
+        msg_104 = Frame(
+            id=0x104,
+            is_extended=False,
+            dlc=8,
+            data=[0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, msg_102.data[-1]])
+        msg_105 = Frame(
+            id=0x105,
+            is_extended=False,
+            dlc=8,
+            data=[0, 0x5C, 0x5F, 0, 0, 0, 0, msg_101.data[-1]])
+        msg_106 = Frame(
+            id=0x106,
+            is_extended=False,
+            dlc=8,
+            data=[0xFF, 0xA3, 0xA0, 0xFF, 0xFF, 0xFF, 0xFF, msg_102.data[-1]])
+        msg_70 = Frame(
+            id=0x70B,
+            is_extended=False,
+            dlc=1,
+            data=[0x05, 0, 0, 0, 0, 0, 0 ,0])
+
+        self.can0_msg_publisher.publish(msg_70)
+        self.can0_msg_publisher.publish(msg_101)
+        self.can0_msg_publisher.publish(msg_102)
+        self.can0_msg_publisher.publish(msg_103)
+        self.can0_msg_publisher.publish(msg_104)
+        self.can0_msg_publisher.publish(msg_105)
+        self.can0_msg_publisher.publish(msg_106)
+        self.get_logger().info(
+            f'{msg_101}',
+            throttle_duration_sec=0.99)
+
     # steering cmd 전송
     def publish_can_bus1_msg(self):
         data = self.can_msg_danfoss_steer_cmd.encode({
