@@ -134,7 +134,7 @@ class CanSender(Node):
 
     # steering cmd 전송
     def publish_can_bus1_msg(self):
-        if self.status == 'manual':
+        if self.status != 'remote' and self.status != 'auto':
             data_sol = self.can_msg_danfoss_sol.encode({
                 'Sol_Cmd': 0,
                 'Chk_Signal': 0
