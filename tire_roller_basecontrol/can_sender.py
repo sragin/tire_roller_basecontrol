@@ -15,6 +15,7 @@ from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data
 from rclpy.qos import qos_profile_system_default
 from roller_base_interfaces.msg import DriveControl
+from std_msgs.msg import String
 
 
 class CanSender(Node):
@@ -26,9 +27,12 @@ class CanSender(Node):
         self.candb_danfoss = cantools.db.load_file(
             get_package_share_directory('tire_roller_basecontrol') + '/r_danfoss_220420.dbc')
         self.can_msg_danfoss_steer_cmd = self.candb_danfoss.get_message_by_name('Steering_Cmd')
+        self.can_msg_danfoss_sol = self.candb_danfoss.get_message_by_name('Sol_Chk_Cmd')
 
         self.drive_msg_subscriber = self.create_subscription(
             DriveControl, 'drive_control', self.recv_drive, qos_profile_sensor_data)
+        self.status_msg_subscriber = self.create_subscription(
+            String, 'status', self.recv_status, qos_profile_system_default)
         self.can0_publish_frequency = 50
         self.can0_msg_publisher = self.create_publisher(
             Frame, 'can0/to_can_bus', qos_profile_system_default)
@@ -48,8 +52,13 @@ class CanSender(Node):
             1/self.can3_publish_frequency, self.publish_can_bus3_msg)
 
         self.drive_control_msg = DriveControl()
+        self.status = 'e_stop'
 
         self.can0_cnt = 0
+
+    def recv_status(self, msg: String):
+        self.get_logger().debug(f'Status: {self.status}')
+        self.status = msg.data
 
     def recv_drive(self, msg: DriveControl):
         self.drive_control_msg = msg
@@ -125,15 +134,43 @@ class CanSender(Node):
 
     # steering cmd 전송
     def publish_can_bus1_msg(self):
-        data = self.can_msg_danfoss_steer_cmd.encode({
+        if self.status == 'manual':
+            data_sol = self.can_msg_danfoss_sol.encode({
+                'Sol_Cmd': 0,
+                'Chk_Signal': 0
+            })
+            msg_danfoss_sol = Frame()
+            msg_danfoss_sol.id = self.can_msg_danfoss_sol.frame_id
+            msg_danfoss_sol.dlc = self.can_msg_danfoss_sol.length
+            msg_danfoss_sol.data[:msg_danfoss_sol.dlc] = list(data_sol)
+
+            self.can1_msg_publisher.publish(msg_danfoss_sol)
+            self.get_logger().warn(
+                'No steer control in manual mode',
+                throttle_duration_sec=0.99
+            )
+            return
+
+        data_steer = self.can_msg_danfoss_steer_cmd.encode({
             'Left_duty': self.drive_control_msg.steer_left,
             'Right_duty': self.drive_control_msg.steer_right
         })
         msg_danfoss_steer_cmd = Frame()
         msg_danfoss_steer_cmd.id = self.can_msg_danfoss_steer_cmd.frame_id
         msg_danfoss_steer_cmd.dlc = self.can_msg_danfoss_steer_cmd.length
-        msg_danfoss_steer_cmd.data[:msg_danfoss_steer_cmd.dlc] = list(data)
+        msg_danfoss_steer_cmd.data[:msg_danfoss_steer_cmd.dlc] = list(data_steer)
+
+        data_sol = self.can_msg_danfoss_sol.encode({
+            'Sol_Cmd': 1,
+            'Chk_Signal': 0
+        })
+        msg_danfoss_sol = Frame()
+        msg_danfoss_sol.id = self.can_msg_danfoss_sol.frame_id
+        msg_danfoss_sol.dlc = self.can_msg_danfoss_sol.length
+        msg_danfoss_sol.data[:msg_danfoss_sol.dlc] = list(data_sol)
+
         self.can1_msg_publisher.publish(msg_danfoss_steer_cmd)
+        self.can1_msg_publisher.publish(msg_danfoss_sol)
         self.get_logger().info(
             f'DANFOSS STEER CMD:\tid:{msg_danfoss_steer_cmd.id}, '
             f'data:{msg_danfoss_steer_cmd.data}',
