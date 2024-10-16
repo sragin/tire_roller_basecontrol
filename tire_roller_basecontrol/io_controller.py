@@ -101,19 +101,11 @@ class IOController(Node):
                 throttle_duration_sec=0.99
             )
             if self.initialized:
-                # self.modbusclient_DO.write_multiple_coils(
-                #     0,
-                #     [
-                #         False, False, True, False, False,
-                #         False, True, False, False, False,
-                #         False, True, False
-                #     ]
-                # )
-                # time.sleep(0.1)
-                self.modbusclient_DO.write_single_coil(2, False)
+                # Seat, CAN mux, BTS, Parking, Brake Analog
+                self.modbusclient_DO.write_multiple_coils(0, [False, False, False, False, False])
                 self.initialized = False
             return
-        if (self.status == 'remote' or self.status == 'auto') and not self.initialized:
+        elif (self.status == 'remote' or self.status == 'auto') and not self.initialized:
             self.get_logger().warn(
                 'Auto Mode',
                 throttle_duration_sec=0.99
