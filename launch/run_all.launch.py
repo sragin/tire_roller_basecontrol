@@ -20,27 +20,23 @@ def generate_launch_description():
             )
         ),
         Node(
-            package='wheelloader_control',
+            package='tire_roller_basecontrol',
             executable='can_parser',
         ),
         Node(
-            package='wheelloader_control',
+            package='tire_roller_basecontrol',
             executable='can_sender',
         ),
         Node(
-            package='wheelloader_control',
-            executable='navigator',
+            package='tire_roller_basecontrol',
+            executable='navigator_base',
         ),
         Node(
-            package='wheelloader_control',
+            package='tire_roller_basecontrol',
             executable='io_controller',
         ),
         Node(
-            package='wheelloader_control',
-            executable='bucket_controller',
-        ),
-        Node(
-            package='wheelloader_control',
+            package='tire_roller_basecontrol',
             executable='drive_controller',
         ),
     ])
