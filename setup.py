@@ -32,7 +32,6 @@ setup(
             'can_parser = tire_roller_basecontrol.can_parser:main',
             'can_sender = tire_roller_basecontrol.can_sender:main',
             'io_controller = tire_roller_basecontrol.io_controller:main',
-            # 'bucket_controller = tire_roller_basecontrol.bucket_controller:main',
             'drive_controller = tire_roller_basecontrol.drive_controller:main',
             'navigator_base = tire_roller_basecontrol.navigator:main',
         ],
