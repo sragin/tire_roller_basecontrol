@@ -53,6 +53,7 @@ class IOController(Node):
             self.get_logger().warn('DO module is not opened')
             self.modbusclient_DO.close()
             self.modbusclient_DO.open()
+            self.get_logger().warn('DO module is opened')
         # 연결된 후 IO초기화 진행
         # Seat, CAN mux, BTS, Parking, Brake Analog
         self.modbusclient_DO.write_multiple_coils(0, [True, True, True, False, False])
@@ -95,8 +96,10 @@ class IOController(Node):
         #         self.initialized = False
         #     return
         if self.status == 'manual':
-            pass
-            self.get_logger().warn('No IO control in manual mode')
+            self.get_logger().warn(
+                'No IO control in manual mode',
+                throttle_duration_sec=0.99
+            )
             if self.initialized:
                 # self.modbusclient_DO.write_multiple_coils(
                 #     0,
@@ -111,7 +114,10 @@ class IOController(Node):
                 self.initialized = False
             return
         if (self.status == 'remote' or self.status == 'auto') and not self.initialized:
-            self.get_logger().warn('Auto Mode')
+            self.get_logger().warn(
+                'Auto Mode',
+                throttle_duration_sec=0.99
+            )
             self.init_module()
             return
 
