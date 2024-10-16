@@ -118,7 +118,7 @@ class CanParser(Node):
 
         self.get_logger().debug(
             f'JOY: {self.remote_joystick} SW: {self.remote_switch}',
-            throttle_duration_sec=0.5
+            throttle_duration_sec=0.99
         )
 
     def publish_remote_msg(self):
@@ -130,7 +130,7 @@ class CanParser(Node):
     def recv_can_bus3(self, msg: Frame):
         # self.get_logger().info(f'{msg}')
         if msg.id == self.can_msg_encoder.frame_id:
-            _cur = self.can_msg_encoder.decode(msg.data)
+            _cur = self.can_msg_encoder.decode(msg.data.tobytes())
             self.encoder_cnt = _cur['SingleTurn']
             self.encoder_error = _cur['Error']
             # 16384 pulse / 360 degree / 140:25 gear ratio
