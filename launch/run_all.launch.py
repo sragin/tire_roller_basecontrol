@@ -39,4 +39,12 @@ def generate_launch_description():
             package='tire_roller_basecontrol',
             executable='drive_controller',
         ),
+        Node(
+            package='gps_rclpy_pkg',
+            executable='tcpgps_geoid_pub',
+            parameters=[
+                {'gps_ip': '192.168.110.163'},
+                {'gps_port': 11511},
+            ]
+        ),
     ])
