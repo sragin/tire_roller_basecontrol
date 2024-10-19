@@ -121,8 +121,12 @@ class Navigator(Node):
                 self.sm.to_idle()
             elif self.remote_msg.remote_switch[22] == 1:
                 self.sm.to_manual()
-            elif self.remote_msg.remote_switch[21] == 1:
+            elif self.remote_msg.remote_switch[21] == 1 \
+                and self.remote_msg.remote_switch[19] == 0:
                 self.sm.to_remote()
+            elif self.remote_msg.remote_switch[21] == 1 \
+                and self.remote_msg.remote_switch[19] == 1:
+                self.sm.to_auto()
         except TransitionNotAllowed as e:
             self.get_logger().warn(
                 f'{e}',
