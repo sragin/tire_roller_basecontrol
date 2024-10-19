@@ -72,7 +72,7 @@ class CanSender(Node):
         elif self.drive_control_msg.fnr == 2:  # reverse
             joy_pos = 6
         else:
-            joy_pos = 4
+            joy_pos = 8
         accel = self.drive_control_msg.accel
 
         msg_101 = Frame(

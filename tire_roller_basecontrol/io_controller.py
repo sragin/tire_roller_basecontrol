@@ -56,7 +56,11 @@ class IOController(Node):
             self.get_logger().warn('DO module is opened')
         # 연결된 후 IO초기화 진행
         # Seat, CAN mux, BTS, Parking, Brake Analog
-        self.modbusclient_DO.write_multiple_coils(0, [True, True, True, False, False])
+        # self.modbusclient_DO.write_single_coil(0, True)  # Seat
+        # self.modbusclient_DO.write_single_coil(3, True)  # Parking
+        # self.modbusclient_DO.write_single_coil(2, True)  # BTS
+        # self.modbusclient_DO.write_single_coil(1, True)  # CAN mux
+        self.modbusclient_DO.write_multiple_coils(0, [True, True, True, True, False])
         self.initialized = True
 
     def recv_status(self, msg: String):
