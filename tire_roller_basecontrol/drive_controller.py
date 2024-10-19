@@ -49,6 +49,7 @@ class DriveController(Node):
 
     def recv_anm(self, msg: AnmControl):
         self.anm_msg = msg
+        self.get_logger().info(f'ANM cmd:{msg}', throttle_duration_sec=1.0)
 
     def recv_remote(self, msg: RemoteControl):
         self.remote_msg = msg
