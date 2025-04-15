@@ -5,7 +5,7 @@
 # Proprietary and confidential.
 
 
-# import time
+import time
 
 from pyModbusTCP.client import ModbusClient
 import rclpy
@@ -106,8 +106,12 @@ class IOController(Node):
             )
             if self.initialized:
                 # Seat, CAN mux, BTS, Parking, Brake Analog
+                self.modbusclient_DO.write_multiple_coils(0, [True, True, False, False, False])
+                time.sleep(0.1)
                 self.modbusclient_DO.write_multiple_coils(0, [False, False, False, False, False])
-                self.initialized = False
+            else:
+                self.modbusclient_DO.write_multiple_coils(0, [False, False, False, False, False])
+            self.initialized = False
             return
         elif (self.status == 'remote' or self.status == 'auto') and not self.initialized:
             self.get_logger().warn(
@@ -117,8 +121,8 @@ class IOController(Node):
             self.init_module()
             return
         elif self.status == 'remote' or self.status == 'auto':
-            self.get_logger().info(f'{self.drive_control_msg.accel}')
-            if self.drive_control_msg.accel != 0:
+            self.get_logger().info(f'{self.msg_drive.accel}')
+            if self.msg_drive.accel != 0:
                 self.modbusclient_DO.write_single_coil(3, True)
             else:
                 self.modbusclient_DO.write_single_coil(3, False)
