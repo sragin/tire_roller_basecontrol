@@ -111,7 +111,7 @@ class IOController(Node):
             return
         elif (self.status == 'remote' or self.status == 'auto') and not self.initialized:
             self.get_logger().warn(
-                'Auto Mode',
+                f'{self.status} Mode',
                 throttle_duration_sec=0.99
             )
             self.init_module()
