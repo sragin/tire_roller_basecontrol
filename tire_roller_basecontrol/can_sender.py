@@ -109,12 +109,12 @@ class CanSender(Node):
             id=0x105,
             is_extended=False,
             dlc=8,
-            data=[0, 0x5C, 0x5F, 0, 0, 0, 0, msg_101.data[-1]])
+            data=[0, 0x36, 0x38, 0, 0, 0, 0, msg_101.data[-1]])
         msg_106 = Frame(
             id=0x106,
             is_extended=False,
             dlc=8,
-            data=[0xFF, 0xA3, 0xA0, 0xFF, 0xFF, 0xFF, 0xFF, msg_102.data[-1]])
+            data=[0xFF, 0xC9, 0xC7, 0xFF, 0xFF, 0xFF, 0xFF, msg_102.data[-1]])
         msg_70 = Frame(
             id=0x70B,
             is_extended=False,

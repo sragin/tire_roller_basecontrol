@@ -65,11 +65,11 @@ class DriveController(Node):
             msg = self.remote_msg
             # drive
             if msg.remote_joystick[0] < 127 and msg.remote_switch[1]:
-                accel = (127 - msg.remote_joystick[0]) / 126 * 100
+                accel = (127 - msg.remote_joystick[0]) / 126 * 255
                 brake = 0
                 fnr = 1  # forward
             elif msg.remote_joystick[0] > 127 and msg.remote_switch[0]:
-                accel = (msg.remote_joystick[0] - 127) / 127 * 100
+                accel = (msg.remote_joystick[0] - 127) / 127 * 255
                 brake = 0
                 fnr = 2  # reverse
             else:
@@ -79,11 +79,11 @@ class DriveController(Node):
 
             # steer
             if msg.remote_joystick[3] < 127 and msg.remote_switch[9]:
-                steer_right = (127 - msg.remote_joystick[3]) / 126 * 100
+                steer_right = (127 - msg.remote_joystick[3]) / 126 * 50
                 steer_left = 0
             elif msg.remote_joystick[3] > 127 and msg.remote_switch[8]:
                 steer_right = 0
-                steer_left = (msg.remote_joystick[3] - 127) / 127 * 100
+                steer_left = (msg.remote_joystick[3] - 127) / 127 * 50
             else:
                 steer_left = 0
                 steer_right = 0
