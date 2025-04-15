@@ -116,6 +116,12 @@ class IOController(Node):
             )
             self.init_module()
             return
+        elif self.status == 'remote' or self.status == 'auto':
+            self.get_logger().info(f'{self.drive_control_msg.accel}')
+            if self.drive_control_msg.accel != 0:
+                self.modbusclient_DO.write_single_coil(3, True)
+            else:
+                self.modbusclient_DO.write_single_coil(3, False)
 
 
 def main(args=None):
