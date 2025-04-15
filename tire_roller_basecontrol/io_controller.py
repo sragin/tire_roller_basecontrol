@@ -60,7 +60,7 @@ class IOController(Node):
         # self.modbusclient_DO.write_single_coil(3, True)  # Parking
         # self.modbusclient_DO.write_single_coil(2, True)  # BTS
         # self.modbusclient_DO.write_single_coil(1, True)  # CAN mux
-        self.modbusclient_DO.write_multiple_coils(0, [True, True, True, True, False])
+        self.modbusclient_DO.write_multiple_coils(0, [True, True, True, False, False])
         self.initialized = True
 
     def recv_status(self, msg: String):
