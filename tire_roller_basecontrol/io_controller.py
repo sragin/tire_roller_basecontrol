@@ -106,7 +106,7 @@ class IOController(Node):
             )
             if self.initialized:
                 # Seat, CAN mux, BTS, Parking, Brake Analog
-                self.modbusclient_DO.write_multiple_coils(0, [True, True, False, False, False])
+                self.modbusclient_DO.write_multiple_coils(0, [True, False, True, False, False])
                 time.sleep(0.1)
                 self.modbusclient_DO.write_multiple_coils(0, [False, False, False, False, False])
             else:
