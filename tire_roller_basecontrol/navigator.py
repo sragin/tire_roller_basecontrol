@@ -21,6 +21,7 @@ class TireRollerStateMachine(StateMachine):
     idle = State(initial=True)
     e_stop = State()
     manual = State()
+    manual_replica = State()
     remote = State()
     auto = State()
 
@@ -28,6 +29,7 @@ class TireRollerStateMachine(StateMachine):
     to_estop = (
         remote.to(e_stop)
         | auto.to(e_stop)
+        | manual_replica.to(e_stop)
         | e_stop.to(e_stop)
     )
     to_manual = (
@@ -37,12 +39,19 @@ class TireRollerStateMachine(StateMachine):
         | auto.to(manual)
         | e_stop.to(manual)
     )
+    to_manual_replica = (
+        manual_replica.to(manual_replica)
+        | remote.to(manual_replica)
+        | auto.to(manual_replica)
+    )
     to_remote = (
         manual.to(remote)
+        | manual_replica.to(remote)
         | auto.to(remote)
     )
     to_auto = (
         manual.to(auto)
+        | manual_replica.to(auto)
         | remote.to(auto)
     )
 
@@ -65,6 +74,12 @@ class TireRollerStateMachine(StateMachine):
     def on_enter_manual(self):
         self.navigator.get_logger().warn(
             'Manual state',
+            throttle_duration_sec=1.0
+        )
+
+    def on_enter_manual_replica(self):
+        self.navigator.get_logger().warn(
+            'Replica state',
             throttle_duration_sec=1.0
         )
 
@@ -120,7 +135,7 @@ class Navigator(Node):
                     and self.sm.current_state.id == 'e_stop':
                 self.sm.to_idle()
             elif self.remote_msg.remote_switch[22] == 1:
-                self.sm.to_manual()
+                self.sm.to_manual_replica()
             elif self.remote_msg.remote_switch[21] == 1 \
                 and self.remote_msg.remote_switch[19] == 0:
                 self.sm.to_remote()
