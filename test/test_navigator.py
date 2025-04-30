@@ -88,8 +88,12 @@ def test_remote_state_transitions(navigator: Navigator):
     assert sm.current_state == sm.e_stop
 
     sm.current_state = sm.remote
-    sm.to_manual()
-    assert sm.current_state == sm.manual
+    with pytest.raises(TransitionNotAllowed):
+        sm.to_manual()
+
+    sm.current_state = sm.remote
+    sm.to_manual_replica()
+    assert sm.current_state == sm.manual_replica
 
     sm.current_state = sm.remote
     sm.to_auto()
@@ -107,6 +111,10 @@ def test_auto_state_transitions(navigator: Navigator):
     sm.to_estop()
     assert sm.current_state == sm.e_stop
 
+    sm.current_state = sm.remote
+    with pytest.raises(TransitionNotAllowed):
+        sm.to_manual()
+
     sm.current_state = sm.auto
     sm.to_remote()
     assert sm.current_state == sm.remote
@@ -114,6 +122,30 @@ def test_auto_state_transitions(navigator: Navigator):
     sm.current_state = sm.auto
     with pytest.raises(TransitionNotAllowed):
         sm.to_auto()
+
+
+def test_manual_replica_state_transitions(navigator: Navigator):
+    sm = navigator.sm
+
+    sm.current_state = sm.manual_replica
+    with pytest.raises(TransitionNotAllowed):
+        sm.to_idle()
+
+    sm.current_state = sm.manual_replica
+    sm.to_estop()
+    assert sm.current_state == sm.e_stop
+
+    sm.current_state = sm.manual_replica
+    sm.to_remote()
+    assert sm.current_state == sm.remote
+
+    sm.current_state = sm.manual_replica
+    sm.to_auto()
+    assert sm.current_state == sm.auto
+
+    sm.current_state = sm.manual_replica
+    sm.to_manual_replica()
+    assert sm.current_state == sm.manual_replica
 
 
 def test_invalid_transitions(navigator: Navigator):
@@ -178,6 +210,35 @@ def test_state_machine_manual_switch(navigator: Navigator, remote_switch):
 
     remote_switch[22] = 0
     remote_switch[21] = 1
+    remote_switch[19] = 0
+    navigator.recv_remote(RemoteControl(remote_switch=remote_switch))
+    navigator.manage_state()
+    assert sm.current_state == sm.remote
+
+
+def test_state_machine_manual_replica_switch(navigator: Navigator, remote_switch):
+    sm = navigator.sm
+    remote_switch[22] = 1  # manual switch
+    navigator.recv_remote(RemoteControl(remote_switch=remote_switch))
+    navigator.manage_state()
+    assert sm.current_state == sm.manual
+
+    remote_switch[22] = 0
+    remote_switch[21] = 1
+    remote_switch[19] = 0
+    navigator.recv_remote(RemoteControl(remote_switch=remote_switch))
+    navigator.manage_state()
+    assert sm.current_state == sm.remote
+
+    remote_switch[22] = 1  # manual_replica switch
+    navigator.recv_remote(RemoteControl(remote_switch=remote_switch))
+    navigator.manage_state()
+    assert sm.current_state == sm.manual_replica
+
+    # manual_replica에서 다른 상태로 전환되는지 확인
+    remote_switch[22] = 0
+    remote_switch[21] = 1
+    remote_switch[19] = 0
     navigator.recv_remote(RemoteControl(remote_switch=remote_switch))
     navigator.manage_state()
     assert sm.current_state == sm.remote

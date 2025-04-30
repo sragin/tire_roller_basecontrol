@@ -35,8 +35,6 @@ class TireRollerStateMachine(StateMachine):
     to_manual = (
         idle.to(manual)
         | manual.to(manual)
-        | remote.to(manual)
-        | auto.to(manual)
         | e_stop.to(manual)
     )
     to_manual_replica = (
@@ -134,7 +132,9 @@ class Navigator(Node):
             elif not self.estop_wireless.data and self.remote_msg.remote_switch[12] != 1 \
                     and self.sm.current_state.id == 'e_stop':
                 self.sm.to_idle()
-            elif self.remote_msg.remote_switch[22] == 1:
+            elif self.remote_msg.remote_switch[22] == 1 and self.sm.current_state_value == 'idle':
+                self.sm.to_manual()
+            elif self.remote_msg.remote_switch[22] == 1 and self.sm.current_state_value != 'idle':
                 self.sm.to_manual_replica()
             elif self.remote_msg.remote_switch[21] == 1 \
                 and self.remote_msg.remote_switch[19] == 0:
