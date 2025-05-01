@@ -25,6 +25,10 @@ def test_idle_state_transitions(navigator: Navigator):
 
     sm.current_state = sm.idle
     with pytest.raises(TransitionNotAllowed):
+        sm.to_manual_replica()
+
+    sm.current_state = sm.idle
+    with pytest.raises(TransitionNotAllowed):
         sm.to_remote()
 
     sm.current_state = sm.idle
