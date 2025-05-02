@@ -143,8 +143,7 @@ def main(args=None):
         navigator.get_logger().warn('Keyboard interrrupt (SIGINT)')
     finally:
         navigator.destroy_node()
-        if rclpy.ok():
-            rclpy.shutdown()
+        rclpy.shutdown()
 
 
 if __name__ == '__main__':
