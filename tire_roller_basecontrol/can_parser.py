@@ -13,16 +13,11 @@ from ament_index_python import get_package_share_directory
 from can_msgs.msg import Frame
 import cantools
 import rclpy
-# from rclpy.duration import Duration
 from rclpy.logging import LoggingSeverity
 from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data
-# from rclpy.qos import QoSProfile
-# from rclpy.qos_event import QoSOfferedDeadlineMissedInfo
-# from rclpy.qos_event import SubscriptionEventCallbacks
 from roller_base_interfaces.msg import RemoteControl
 from std_msgs.msg import Float32
-# from std_msgs.msg import Int8
 
 
 class CanParser(Node):
@@ -37,26 +32,14 @@ class CanParser(Node):
             get_package_share_directory('tire_roller_basecontrol') + '/remote_240122.dbc')
         self.can_msg_remote_lever = self.candb_remote.get_message_by_name('Lever')
         self.can_msg_remote_switch = self.candb_remote.get_message_by_name('Switch')
-        # self.candb_danfoss = cantools.db.load_file(
-        #     get_package_share_directory('tire_roller_basecontrol') + '/danfoss_240130.dbc')
-        # self.can_msg_danfoss_pilot = self.candb_danfoss.get_message_by_name('D_Pilot_FB')
-        # self.can_msg_danfoss_boom_fb = self.candb_danfoss.get_message_by_name('D_Boom_FB')
-        # self.can_msg_danfoss_bucket_fb = self.candb_danfoss.get_message_by_name('D_Bkt_FB')
         self.candb_encoder = cantools.db.load_file(
             get_package_share_directory('tire_roller_basecontrol') + '/steerEnc_220531.dbc')
         self.can_msg_encoder = self.candb_encoder.get_message_by_name('SteerEncoder')
 
-        # deadline_qos = QoSProfile(
-        #     depth=10,
-        #     deadline=Duration(seconds=3, nanoseconds=0),
-        # )
-        # deadline_event_callback = SubscriptionEventCallbacks(
-        #     deadline=self.anm_deadline_event_callback,
-        # )
         self.can2_msg_subscriber = self.create_subscription(
             Frame,
             'can2/from_can_bus',
-            self.recv_remote,
+            self.recv_can_bus2,
             qos_profile=10
         )
         self.can3_msg_subscriber = self.create_subscription(
@@ -67,40 +50,22 @@ class CanParser(Node):
         )
 
         self.remote_mgs_publish_frequency = 20  # 입력주파수가 20Hz 이어서 출력 주파수도 20Hz로 설정함
-        # self.danfoss_mgs_publish_frequency = 10
         self.remote_publisher = self.create_publisher(
             RemoteControl, 'remote_msg', qos_profile_sensor_data)
-        # self.danfoss_publisher = self.create_publisher(
-        #     DanfossFB, 'danfoss_msg', qos_profile_sensor_data)
-        self.encoder_publisher = self.create_publisher(
-            Float32, 'encoder_msg', qos_profile_sensor_data)
         self.timer_publish_remote_msg = self.create_timer(
             1/self.remote_mgs_publish_frequency, self.publish_remote_msg)
-        # self.timer_publish_danfoss_msg = self.create_timer(
-        #     1/self.danfoss_mgs_publish_frequency, self.publish_danfoss_msg)
+        self.encoder_mgs_publish_frequency = 20
+        self.encoder_publisher = self.create_publisher(
+            Float32, 'encoder_msg', qos_profile_sensor_data)
+        self.timer_publish_encoder_msg = self.create_timer(
+            1/self.encoder_mgs_publish_frequency, self.publish_encoder_msg)
 
         self.remote_joystick = array('B', [0]*8)
         self.remote_switch = array('B', [0]*27)
-        self.remote_cnt = 0
 
-        # self.boom_dn_fb = 0
-        # self.boom_up_fb = 0
-        # self.bucket_in_fb = 0
-        # self.bucket_out_fb = 0
-        # self.boom_dn_cp = 0.0
-        # self.boom_up_cp = 0.0
-        # self.bucket_in_cp = 0.0
-        # self.bucket_out_cp = 0.0
+        self.encoder_degree = 0.0
 
-        # self.encoder_single = 0
-        # self.encoder_error = 0
-        # self.encoder_degree = 0.0
-
-    # def anm_deadline_event_callback(self, info: QoSOfferedDeadlineMissedInfo):
-    #     self.get_logger().warn('Deadline callback')
-    #     self.anm_msg = AnmControl()
-
-    def recv_remote(self, msg: Frame):
+    def recv_can_bus2(self, msg: Frame):
         # self.get_logger().debug(f'{msg}')
         if msg.id == self.can_msg_remote_lever.frame_id:
             _cur = self.can_msg_remote_lever.decode(msg.data.tobytes())
@@ -115,10 +80,17 @@ class CanParser(Node):
                     continue
                 i = f'S{n:02}'
                 self.remote_switch[n] = _cur[i]
+        elif msg.id == self.can_msg_encoder.frame_id:
+            _cur = self.can_msg_encoder.decode(msg.data.tobytes())
+            self.encoder_cnt = _cur['SingleTurn']
+            self.encoder_error = _cur['Error']
+            # 16384 pulse / 360 degree / 140:25 gear ratio
+            self.encoder_degree = self.encoder_cnt / 16384 * 360 / 140 * 25
 
         self.get_logger().debug(
-            f'JOY: {self.remote_joystick} SW: {self.remote_switch}',
-            throttle_duration_sec=0.99
+            f'JOY: {self.remote_joystick} SW: {self.remote_switch}'
+            f' ENC: {self.encoder_degree}',
+            throttle_duration_sec=1.0
         )
 
     def publish_remote_msg(self):
@@ -127,22 +99,13 @@ class CanParser(Node):
         msg.remote_switch = self.remote_switch
         self.remote_publisher.publish(msg)
 
+    def publish_encoder_msg(self):
+        encoder_msg = Float32()
+        encoder_msg.data = self.encoder_degree
+        self.encoder_publisher.publish(encoder_msg)
+
     def recv_can_bus3(self, msg: Frame):
-        # self.get_logger().info(f'{msg}')
-        if msg.id == self.can_msg_encoder.frame_id:
-            _cur = self.can_msg_encoder.decode(msg.data.tobytes())
-            self.encoder_cnt = _cur['SingleTurn']
-            self.encoder_error = _cur['Error']
-            # 16384 pulse / 360 degree / 140:25 gear ratio
-            self.encoder_degree = self.encoder_cnt / 16384 * 360 / 140 * 25
-            self.get_logger().info(
-                f'COUNT: {self.encoder_cnt} '
-                f'DEGREE: {self.encoder_degree:.1f} '
-                f'ERROR: {self.encoder_error}',
-                throttle_duration_sec=0.99)
-            encoder_msg = Float32()
-            encoder_msg.data = self.encoder_degree
-            self.encoder_publisher.publish(encoder_msg)
+        pass
 
     # def publish_danfoss_msg(self):
     #     msg = DanfossFB()
