@@ -184,7 +184,7 @@ class CanSender(Node):
         msg_sync.id = 0x80
         msg_sync.dlc = 1
         msg_sync.data[:msg_sync.dlc] = [0]
-        self.can3_msg_publisher.publish(msg_sync)
+        # self.can3_msg_publisher.publish(msg_sync)  # 테스트 필요...
         self.get_logger().info(f'MSG SYNC: {msg_sync}', once=True)
 
 
